@@ -6,6 +6,7 @@ The code is short and clear, and outperforms every other parser (that's written 
 For an explanation, check out the JSON parser tutorial at /docs/json_tutorial.md
 """
 import sys
+import time
 
 from lark import Lark, Transformer, v_args
 
@@ -87,7 +88,10 @@ def test():
 
 if __name__ == '__main__':
     # test()
+    tic = time.perf_counter()
     with open(sys.argv[1]) as f:
         #print(parse(f.read()))
         parse(f.read())
+    toc = time.perf_counter()
+    print(f"Parser time {toc - tic} seconds")
         

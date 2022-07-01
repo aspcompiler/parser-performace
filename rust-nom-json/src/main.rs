@@ -12,7 +12,7 @@ use nom::{
     Err, IResult, InputTakeAtPosition, AsChar,
 };
 use std::collections::HashMap;
-use std::str;
+use std::{str, time::Instant};
 
 #[derive(Debug, PartialEq)]
 pub enum JsonValue {
@@ -194,6 +194,7 @@ fn root<'a, E: ParseError<&'a str> + ContextError<&'a str>>(
 }
 
 fn main() {
+    let start = Instant::now();
     let input_path = std::env::args()
         .nth(1)
         .expect("Please enter an input Json file path");
@@ -211,4 +212,6 @@ fn main() {
             println!("Incomplete {:?}", n);
         }
     }
+    let duration = start.elapsed();
+    println!("Duration: {:?}", duration);
 }
