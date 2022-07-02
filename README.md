@@ -18,8 +18,12 @@ Memory is measured using the [memusg script](https://gist.github.com/netj/526585
 |---|---|---|
 | Python/lark | 5.270/5.096 | 59.344 |
 | Rust/nom | 0.213/0.204 | 27.828 |
+| Rust/pest | 0.126/0.116 | 51.240 |
 
-Rust parser is 23+ times faster and uses < 47% of peak memory.
+* Rust nom parser is 23+ times faster than the flagship Python/lark parser and uses < 47% of peak memory.
+
+* Although [Pest](https://pest.rs/) that their parser is slower than nom, our test shows that it is no slower.
+
 ## Python
 
 ### python-lark-json
@@ -84,4 +88,38 @@ Results:
 
 ```
  memusg: peak=27828
+```
+
+### rust-nom-json
+
+The parser is adapter from [pest json example](https://pest.rs/book/examples/json.html)
+
+To compiler, from rust-pest-json directory, run:
+
+```
+cargo build --release
+```
+
+Time test:
+
+```
+time ./target/release/rust-pest-json ../data/5000_objects.json
+```
+
+Results:
+
+```
+0.10s user 0.02s system 96% cpu 0.126 total
+```
+
+Memory test:
+
+```
+../scripts/memusg ./target/release/rust-nom-json ../data/5000_objects.json
+```
+
+Results:
+
+```
+ memusg: peak=51240
 ```
