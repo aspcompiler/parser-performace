@@ -17,12 +17,17 @@ Memory is measured using the [memusg script](https://gist.github.com/netj/526585
 | Parser |  Time(s) |  Peak memory(MB) |
 |---|---|---|
 | Python/lark | 5.270/5.096 | 59.344 |
-| Rust/nom | 0.213/0.204 | 27.828 |
-| Rust/pest | 0.126/0.116 | 51.240 |
+| Rust/nom (1) | 0.213/0.204 | 27.828 |
+| Rust/pest (2) | 0.126/0.116 | 51.240 |
+| Rust/serde | 0.097/0.054 | 3.152 (3) |
 
-* Rust nom parser is 23+ times faster than the flagship Python/lark parser and uses < 47% of peak memory.
+1. Unoptimized Rust nom parser is 23+ times faster than the flagship Python/lark parser and uses < 47% of peak memory.
 
-* Although [Pest](https://pest.rs/) that their parser is slower than nom, our test shows that it is no slower.
+2. Although [Pest](https://pest.rs/) that their parser is slower than nom, our test shows that it is no slower. It is possible that our
+nom parser is unoptimized.
+
+3. The memory number is strange because we load the entire Json into memory and our Json is over 5 MB. It is possible that that `memuse` program
+failed to catch the peak.
 
 ## Python
 
@@ -90,7 +95,7 @@ Results:
  memusg: peak=27828
 ```
 
-### rust-nom-json
+### rust-pest-json
 
 The parser is adapter from [pest json example](https://pest.rs/book/examples/json.html)
 
@@ -122,4 +127,38 @@ Results:
 
 ```
  memusg: peak=51240
+```
+
+### rust-serde-json
+
+The parser simply uses [serde_json](https://docs.serde.rs/serde_json/index.html).
+
+To compiler, from rust-serde-json directory, run:
+
+```
+cargo build --release
+```
+
+Time test:
+
+```
+time ./target/release/rust-serde-json ../data/5000_objects.json
+```
+
+Results:
+
+```
+0.07s user 0.02s system 94% cpu 0.097 total
+```
+
+Memory test:
+
+```
+../scripts/memusg ./target/release/rust-nom-json ../data/5000_objects.json
+```
+
+Results:
+
+```
+ memusg: peak=3152
 ```
